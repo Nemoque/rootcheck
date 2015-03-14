@@ -1,9 +1,9 @@
-//初始化双向链表
+//do some initialization fot this double list
 int init_double_list(duNode_t ** pstHead)
 {
     int iRet = RET_SUCCESS;
     int iCir = 0;
-    //初始化头节点
+    //init head node
     * pstHead = (duNode_t *)malloc(sizeof(duNode_t));
     (* pstHead)->pstPrior = NULL;
     (* pstHead)->pstNext = NULL;
@@ -20,19 +20,19 @@ duNode_t * insert_double_list(duNode_t *pstCurrent,time_t unixtime,char *str )
  
  duNode_t * pstTmp = NULL;
  int iRet = RET_SUCCESS;
- //链表初始化
+ //list initialization
  
   pstTmp = (duNode_t *)malloc(sizeof(duNode_t));
   if ( !pstTmp )
   {
    NO_MEMORY;
   }
-  //赋值给当前的节点
+  //assign to current node
   pstCurrent->data = (long)unixtime;
   memcpy(pstCurrent->str,str,256);
   LOGE("UNIX_TIME is:%d and pstCurrent->str is:%s\n",pstCurrent->data,pstCurrent->str);
 
-  //当前节点指向下一个开辟的空间
+  //alloc memory to next node
   pstCurrent->pstNext = pstTmp;
   pstTmp->pstPrior=pstCurrent;
   pstTmp->pstNext = NULL;
@@ -41,7 +41,7 @@ duNode_t * insert_double_list(duNode_t *pstCurrent,time_t unixtime,char *str )
   return pstTmp;
 }
 
-// 打印链表 链表的data元素是可打印的整形    
+// output all the list info   
 int show_double_list_to_file(duNode_t * pstHead,FILE*fp)
 {
  struct tm *tm;
@@ -50,7 +50,7 @@ int show_double_list_to_file(duNode_t * pstHead,FILE*fp)
  duNode_t * pstTmp = pstHead->pstNext;
  if ( NULL == pstHead )
  {
-  LOGE("链表的头节点是空\n");
+  LOGE("head node should not be NULL\n");
   iRet = RET_FAILED;
  }
  else
@@ -68,10 +68,10 @@ int show_double_list_to_file(duNode_t * pstHead,FILE*fp)
  return iRet;
 }
 
-/* 删除包括头节点在内的所有的节点. 07/04/28  */
+//delete all the nodes including HEAD
 int destroy_double_list(duNode_t * pstHead)
 {
- duNode_t * pstTmp = NULL;   /* Temp pointer for circle  */
+ duNode_t * pstTmp = NULL;   //Temp pointer for circle
  int iRet = RET_SUCCESS;
  if ( !pstHead )
  {
@@ -80,7 +80,7 @@ int destroy_double_list(duNode_t * pstHead)
  }
  else
  {
-  while ( pstHead )  /* Free  nodes      */
+  while ( pstHead )  //Free  nodes
   {
    pstTmp = pstHead;
    pstHead = pstHead->pstNext;
@@ -89,17 +89,8 @@ int destroy_double_list(duNode_t * pstHead)
   pstHead = NULL;
  }
  return iRet;
-}/* End of destroyList----------------------------------------------*/
+}
 
-//正确的快速排序 2007/05/09
-/*
- 一趟快速排序的具体做法是：附设两个指针low和high(即第一个和最后一个指针),
- 他们的初值分别为low和high设枢轴(一般为low的值pivot)记录的关键字
- (即本例子中的整形data)为pivot，则首先从high所指位置
- 起向前搜索到第一个关键字小于pivot的记录和枢轴记录交换，然后从low所指位置起
- 向后搜索，找到第一个关键字大于pivot的记录和枢轴记录相互交换，重复这两步直
- 至low = high为止。
-*/
 duNode_t * partion(duNode_t * pstHead, duNode_t * pstLow, duNode_t * pstHigh)
 {
  elemType iTmp = 0;
@@ -107,22 +98,22 @@ duNode_t * partion(duNode_t * pstHead, duNode_t * pstLow, duNode_t * pstHigh)
  char buf[256];
  if ( !pstHead )
  {
-  printf("错误，头节点为空！\n");
+  printf("head node should not be NULL！\n");
   exit(1);
  }
  if ( !pstHead->pstNext )
  {
-  return pstHead->pstNext;//就一个元素
+  return pstHead->pstNext;//just one element
  } 
  pivot = pstLow->data;
  while ( pstLow != pstHigh )
  {
-  //从后面往前换
+  //from end to front
   while ( pstLow != pstHigh && pstHigh->data <= pivot )
   {
    pstHigh = pstHigh->pstPrior;
   }
-  //交换high low
+  //swith high and low node
   iTmp = pstLow->data;
   pstLow->data = pstHigh->data;
   pstHigh->data = iTmp;
@@ -131,12 +122,12 @@ duNode_t * partion(duNode_t * pstHead, duNode_t * pstLow, duNode_t * pstHigh)
   memcpy(pstLow->str,pstHigh->str,256);
   memcpy(pstHigh->str,buf,256);
 
-  //从前往后换
+  //from front to end
   while ( pstLow != pstHigh && pstLow->data >= pivot )
   {
    pstLow = pstLow->pstNext;
   }
-  //交换high low
+  //siwth high and low node 
   iTmp = pstLow->data;
   pstLow->data = pstHigh->data;
   pstHigh->data = iTmp;
@@ -147,7 +138,7 @@ duNode_t * partion(duNode_t * pstHead, duNode_t * pstLow, duNode_t * pstHigh)
  }
  return pstLow;
 }
-//快排
+//quick sort alg
 void quick_sort_for_double_list(duNode_t * pstHead, duNode_t * pstLow, duNode_t * pstHigh)
 {
  duNode_t * pstTmp = NULL;
